@@ -3,6 +3,7 @@
 namespace app\modules\models;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 
 /**
  * This is the model class for table "orders".
@@ -60,4 +61,26 @@ class Orders extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Statuses::class, ['id' => 'status_id']);
     }
+
+    public function search($params){
+        $query = static::find();
+        $this->scenario = 'filter'; // использование сценариев определяет какие поля выводить в фильтре
+        if(isset($params["some-parameter"])){
+            $query->where(['some-field' => $params["some-parameter"]]);
+}
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,    ]);
+        $this->load($params);
+        if (!$this->validate()) {
+            return $dataProvider;
+        }
+        return $dataProvider;
+    }
+
+    public function scenarios() {
+        $scenarios = parent::scenarios();
+        $scenarios['filter'] = [
+            'some-field'
+        ];
+        return $scenarios; }
 }

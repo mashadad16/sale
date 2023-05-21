@@ -18,17 +18,18 @@ use yii\helpers\Html;
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
     'columns' => [
             ['class' => 'yii\grid\ActionColumn',
-                'header'=>'Действия',
+                'header'=>' ',
                 'template' => '{update} {delete}',
                 'buttons' =>
                  [
-                    'update' => function($url,$model,$key)
+                    'update' => function($url)
                         {
                             return Html::a('<i class="fa fa-pencil" style="color: #ffc107"></i>', $url);
                         },
-                    'delete' => function($url,$model,$key)
+                    'delete' => function($url)
                         {
                             return Html::a('<i class="fa fa-trash" style="color: #ff4534"></i>', $url);
                         },
@@ -37,9 +38,19 @@ use yii\helpers\Html;
             ],
     ],
         'id',
-        'create_at',
+        [
+            'attribute' => 'create_at',
+            'filter' => false
+        ],
         'name',
-        'status_id',
+        [
+            'attribute' => 'status_id',
+            'value' => function ($dataProvider){
+                if ($dataProvider->status_id == 1){return 'Выполнен';}
+                else {return 'В работе';}
+            },
+            'filter' => false
+        ],
         ],
 ]) ?>
 
