@@ -2,6 +2,8 @@
 
 namespace app\modules\controllers;
 
+use app\modules\models\Orders;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 
 /**
@@ -15,9 +17,17 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        
-
-        $hello = 'hjhjh';
-        return $this->render('index',['hello' => $hello]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Orders::find(),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'create_at' => SORT_DESC,
+                    ],
+                ],
+        ]);
+        return $this->render('index',['dataProvider' => $dataProvider]);
     }
 }
