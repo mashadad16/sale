@@ -62,25 +62,55 @@ class Orders extends \yii\db\ActiveRecord
         return $this->hasOne(Statuses::class, ['id' => 'status_id']);
     }
 
-    public function search($params){
-        $query = static::find();
-        $this->scenario = 'filter'; // использование сценариев определяет какие поля выводить в фильтре
-        if(isset($params["some-parameter"])){
-            $query->where(['some-field' => $params["some-parameter"]]);
-}
+    /*public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent class
+        return Orders::scenarios();
+    }*/
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = Orders::find();
+
+        // add conditions that should always apply here
+
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,    ]);
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'create_at' => SORT_DESC,
+                ],
+            ],
+        ]);
+
         $this->load($params);
-        if (!$this->validate()) {
+
+        /*if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
             return $dataProvider;
-        }
+        }*/
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'create_at' => $this->create_at,
+            'status_id' => $this->status_id,
+        ]);
+
+        $query
+            ->andFilterWhere(['like', 'name', $this->name]);
+
         return $dataProvider;
     }
-
-    public function scenarios() {
-        $scenarios = parent::scenarios();
-        $scenarios['filter'] = [
-            'some-field'
-        ];
-        return $scenarios; }
 }

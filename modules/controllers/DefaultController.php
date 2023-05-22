@@ -19,7 +19,7 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
+        /*$dataProvider = new ActiveDataProvider([
             'query' => Orders::find(),
             'pagination' => [
                 'pageSize' => 10,
@@ -30,7 +30,10 @@ class DefaultController extends Controller
                     ],
                 ],
         ]);
+        $searchModel = new Orders();*/
+
         $searchModel = new Orders();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index',['dataProvider' => $dataProvider, 'searchModel' => $searchModel]);
     }
 

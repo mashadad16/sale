@@ -20,6 +20,21 @@ use yii\helpers\Html;
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
+    'tableOptions' => ['class' => 'table'],
+    'showFooter' => true,
+    'layout' => "{errors}\n{pager}\n{items}\n{pager}\n{summary}",
+    'summary' => '<i>Сейчас вы видите от </i> <b>{begin}</b> до <b>{end}</b> записей (всего: <b style="color: #090">{totalCount}</b>)',
+    'headerRowOptions' => [
+        'class' => 'headerCustomRow'
+    ],
+    'footerRowOptions' => [
+        'style' => 'color: #888;font-style: italic;'
+    ],
+    'rowOptions' => function($model, $key, $index){
+        return [
+            'class' => ($index % 2 == 0) ? 'stripShow' : ''
+        ];
+    },
     'columns' => [
             ['class' => 'yii\grid\ActionColumn',
                 'header'=>' ',
@@ -43,7 +58,10 @@ use yii\helpers\Html;
             'attribute' => 'create_at',
             'filter' => false
         ],
-        'name',
+        [
+            'attribute' => 'name',
+            'footer' => 'Введите имя заказа'
+        ],
         [
             'attribute' => 'status_id',
             'value' => function ($dataProvider){
@@ -56,3 +74,15 @@ use yii\helpers\Html;
 ]) ?>
 
     </div>
+<style>
+    .empty-cell{
+        background: #c12e2a;
+    }
+    .headerCustomRow, .headerCustomRow th, .headerCustomRow a{
+        background: #337ab7;
+        color: #fff;
+    }
+    .stripShow{
+        background: #e9f1ff
+    }
+</style>
